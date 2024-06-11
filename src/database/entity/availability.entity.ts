@@ -9,11 +9,8 @@ export class Availability {
   professionalId: string;
 
   @Column()
-  date: Date;
+  startDate: Date;
 
   @Column()
-  startHour: string;
-
-  @Column()
-  endHour: string;
+  endDate: Date;
 }

@@ -9,15 +9,13 @@ export class ProfessionalsService {
 
   public async createAvailability({
     professionalId,
-    date,
     availabilities,
   }: CreateAvailabilityDto) {
-    for (const { startHour, endHour } of availabilities) {
+    for (const { startDate, endDate } of availabilities) {
       await this.availabilityService.insert({
         professionalId,
-        date,
-        startHour,
-        endHour,
+        startDate,
+        endDate,
       });
     }
   }
