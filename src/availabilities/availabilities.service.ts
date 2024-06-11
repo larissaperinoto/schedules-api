@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InsertAvailabilityDto } from './dto/insert-availability.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Availability } from '../database/entity/availability.entity';
-import { Repository } from 'typeorm';
+import { Repository, MoreThan, LessThan } from 'typeorm';
+import { FindByProfessionalIdDto } from './dto/findBy.dto';
 
 @Injectable()
 export class AvailabilitiesService {
@@ -13,21 +14,33 @@ export class AvailabilitiesService {
 
   public async insert({
     professionalId,
-    date,
-    startHour,
-    endHour,
+    startDate,
+    endDate,
   }: InsertAvailabilityDto) {
     return await this.availabilityRepository.insert({
       professionalId,
-      date,
-      startHour,
-      endHour,
+      startDate,
+      endDate,
     });
   }
 
-  public async findByProfessionalId(professionalId: string) {
-    return await this.availabilityRepository.find({
-      where: { professionalId },
-    });
+  public async findByProfessionalId({
+    professionalId,
+    startDate,
+    endDate,
+  }: FindByProfessionalIdDto) {
+    if (startDate && endDate) {
+      return await this.availabilityRepository.find({
+        where: [
+          { professionalId },
+          { startDate: MoreThan(startDate) },
+          { endDate: LessThan(endDate) },
+        ],
+      });
+    } else {
+      return await this.availabilityRepository.find({
+        where: { professionalId },
+      });
+    }
   }
 }
