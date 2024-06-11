@@ -29,25 +29,44 @@ export class AppointmentsService {
       );
     }
 
-    for (const availability of availabilities) {
-      const availabilityStartTimestamp = new Date(
-        availability.startDate,
-      ).getTime();
-      const availabilityEndTimestamp = new Date(availability.endDate).getTime();
+    const scheduleStartTimestamp = new Date(startDate).getTime();
+    const scheduleEndTimestamp = new Date(endDate).getTime();
 
-      const scheduleStartTimestamp = new Date(startDate).getTime();
-      const scheduleEndTimestamp = new Date(endDate).getTime();
-
-      if (
-        scheduleStartTimestamp < availabilityStartTimestamp ||
-        scheduleStartTimestamp > availabilityEndTimestamp ||
-        scheduleEndTimestamp > availabilityEndTimestamp
-      ) {
-        throw new HttpException(
-          'Time range is not available',
-          HttpStatus.CONFLICT,
+    if (
+      availabilities.every((availability) => {
+        return (
+          scheduleStartTimestamp < new Date(availability.startDate).getTime()
         );
-      }
+      })
+    ) {
+      throw new HttpException(
+        'Time range is not available',
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    if (
+      availabilities.every((availability) => {
+        return (
+          scheduleStartTimestamp > new Date(availability.endDate).getTime()
+        );
+      })
+    ) {
+      throw new HttpException(
+        'Time range is not available',
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    if (
+      availabilities.every((availability) => {
+        return scheduleEndTimestamp > new Date(availability.endDate).getTime();
+      })
+    ) {
+      throw new HttpException(
+        'Time range is not available',
+        HttpStatus.CONFLICT,
+      );
     }
 
     const scheduled = await this.scheduleService.findByRange({
