@@ -3,6 +3,7 @@ import { InsertScheduleDto } from './dto/insert-schedule.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Schedule } from '../database/entity/schedule.entity';
 import { Between, Repository } from 'typeorm';
+import { FindByRangeDto } from './dto/findBy.dto';
 
 @Injectable()
 export class SchedulesService {
@@ -25,7 +26,7 @@ export class SchedulesService {
     });
   }
 
-  public async findByRange({ startDate, endDate }) {
+  public async findByRange({ startDate, endDate }: FindByRangeDto) {
     return await this.scheduleRepository.find({
       where: [
         { startDate: Between(startDate, endDate) },
