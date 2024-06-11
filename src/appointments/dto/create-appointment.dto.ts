@@ -13,11 +13,6 @@ export class CreateAppointmentDto {
   @IsNotEmpty()
   @Transform(({ value }) => new Date(value))
   @MinDate(new Date())
-  date: Date;
-
-  @IsNotEmpty()
-  @Transform(({ value }) => new Date(value))
-  @MinDate(new Date())
   startDate: Date;
 
   @IsNotEmpty()
