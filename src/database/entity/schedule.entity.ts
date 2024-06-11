@@ -3,7 +3,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('schedules')
 export class Schedule {
   @PrimaryGeneratedColumn()
-  scheduleId: string;
+  id: string;
 
   @Column()
   professionalId: string;
@@ -12,11 +12,8 @@ export class Schedule {
   clientId: string;
 
   @Column()
-  date: Date;
+  startDate: Date;
 
   @Column()
-  startHour: string;
-
-  @Column()
-  endHour: string;
+  endDate: Date;
 }
