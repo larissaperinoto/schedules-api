@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InsertAvailabilityDto } from './dto/insert-availability.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Availability } from '../database/entity/availability.entity';
@@ -17,11 +17,18 @@ export class AvailabilitiesService {
     startDate,
     endDate,
   }: InsertAvailabilityDto) {
-    return await this.availabilityRepository.insert({
-      professionalId,
-      startDate,
-      endDate,
-    });
+    try {
+      return await this.availabilityRepository.insert({
+        professionalId,
+        startDate,
+        endDate,
+      });
+    } catch (e) {
+      throw new HttpException(
+        'Unable to enter availability data',
+        e.status ?? HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   public async findByProfessionalId({
