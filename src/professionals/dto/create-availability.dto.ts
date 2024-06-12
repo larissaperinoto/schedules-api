@@ -55,9 +55,11 @@ export class CreateAvailabilityDto {
       properties: {
         startDate: {
           type: 'Date',
+          example: '2024-01-01T08:00:00Z',
         },
         endDate: {
           type: 'Date',
+          example: '2024-01-01T17:00:00Z',
         },
       },
     },
