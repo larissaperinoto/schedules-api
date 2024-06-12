@@ -1,5 +1,5 @@
 export class FindByProfessionalIdDto {
   professionalId: string;
-  startDate: Date;
-  endDate: Date;
+  startDate?: Date;
+  endDate?: Date;
 }
