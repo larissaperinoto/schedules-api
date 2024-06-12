@@ -36,6 +36,9 @@ export class AvailabilitiesService {
           { startDate: MoreThan(startDate) },
           { endDate: LessThan(endDate) },
         ],
+        order: {
+          startDate: 'ASC',
+        },
       });
     } else {
       return await this.availabilityRepository.find({

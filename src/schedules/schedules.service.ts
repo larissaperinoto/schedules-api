@@ -34,4 +34,10 @@ export class SchedulesService {
       ],
     });
   }
+
+  public async findByProfessionalId(professionalId: string) {
+    return await this.scheduleRepository.find({
+      where: { professionalId },
+    });
+  }
 }

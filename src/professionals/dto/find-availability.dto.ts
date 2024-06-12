@@ -1,10 +1,20 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsDateString,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
-export class FindAvailabilityDto {
+export class FindAvailabilityProfessionalDto {
   @IsNotEmpty()
   @IsString()
   professionalId: string;
 
   @IsOptional()
-  date: Date;
+  @IsDateString()
+  startDate?: Date;
+
+  @IsOptional()
+  @IsDateString()
+  endDate?: Date;
 }
