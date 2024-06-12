@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateAvailabilityDto } from './dto/create-availability.dto';
 import { AvailabilitiesService } from 'src/availabilities/availabilities.service';
 import { FindAvailabilityProfessionalDto } from './dto/find-availability.dto';
@@ -18,12 +18,26 @@ export class ProfessionalsService {
     availabilities,
   }: CreateAvailabilityDto) {
     for (const { startDate, endDate } of availabilities) {
+      const start = new Date(startDate).getTime();
+      const end = new Date(endDate).getTime();
+
+      if (start > end) {
+        throw new HttpException(
+          'The end date cannot be greater than the start date',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       await this.availabilityService.insert({
         professionalId,
         startDate,
         endDate,
       });
     }
+
+    return {
+      message: 'Availability entered successfully',
+    };
   }
 
   public async findAvailabilityByProfessional({
