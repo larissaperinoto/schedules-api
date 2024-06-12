@@ -90,5 +90,9 @@ export class AppointmentsService {
       startDate,
       endDate: endDateAdjusted,
     });
+
+    return {
+      message: 'Appointment entered successfully',
+    };
   }
 }
