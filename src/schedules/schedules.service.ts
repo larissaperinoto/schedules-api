@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InsertScheduleDto } from './dto/insert-schedule.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Schedule } from '../database/entity/schedule.entity';
@@ -18,12 +18,19 @@ export class SchedulesService {
     startDate,
     endDate,
   }: InsertScheduleDto) {
-    return await this.scheduleRepository.insert({
-      professionalId,
-      clientId,
-      startDate,
-      endDate,
-    });
+    try {
+      return await this.scheduleRepository.insert({
+        professionalId,
+        clientId,
+        startDate,
+        endDate,
+      });
+    } catch (e) {
+      throw new HttpException(
+        'Unable to enter a schedule',
+        e.status ?? HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   public async findByRange({ startDate, endDate }: FindByRangeDto) {

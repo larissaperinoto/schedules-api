@@ -1,13 +1,10 @@
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
+import { HttpStatus } from '@nestjs/common';
 import { LessThan, MoreThan, Repository } from 'typeorm';
 import { AvailabilitiesService } from '../availabilities.service';
 import { Availability } from '../../database/entity/availability.entity';
-import { HttpStatus } from '@nestjs/common';
-
-export type MockType<T> = {
-  [P in keyof T]?: jest.Mock<{}>;
-};
+import { MockType } from '../../utils/types/mockType';
 
 const availabilityMock = {
   professionalId: '1D67H',
@@ -31,7 +28,6 @@ describe('AvailabilitiesService', () => {
     }).compile();
 
     repository = module.get(getRepositoryToken(Availability));
-
     service = module.get<AvailabilitiesService>(AvailabilitiesService);
   });
 
@@ -50,7 +46,7 @@ describe('AvailabilitiesService', () => {
       expect(insertSpy).toHaveBeenCalledWith(availabilityMock);
     });
 
-    it('does not insert a new availability', async () => {
+    it('should send an error message', async () => {
       jest
         .spyOn(repository, 'insert')
         .mockRejectedValueOnce(new Error() as never);
