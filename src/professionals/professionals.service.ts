@@ -46,7 +46,6 @@ export class ProfessionalsService {
     const availabilities = await this.availabilityService.findByProfessionalId({
       professionalId,
     });
-    console.log(availabilities);
 
     const schedules =
       await this.schedulesService.findByProfessionalId(professionalId);
