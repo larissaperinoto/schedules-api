@@ -2,11 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProfessionalsController } from '../professionals.controller';
 import { ProfessionalsService } from '../professionals.service';
 import { createAvailabilityMock } from './mocks/create-availability.mock';
-import { HttpStatus } from '@nestjs/common';
-import {
-  findAvailabilityMock,
-  findAvailabilityResMock,
-} from './mocks/find-availability.mock';
+import { availabilityByProfessionalMock } from './mocks/find-availability.mock';
 
 describe('ProfessionalsController', () => {
   let controller: ProfessionalsController;
@@ -20,7 +16,7 @@ describe('ProfessionalsController', () => {
           provide: ProfessionalsService,
           useValue: {
             createAvailability: jest.fn(),
-            findAvailabilityByProfessional: jest.fn(),
+            findAvailabilities: jest.fn(),
           },
         },
       ],
@@ -52,19 +48,23 @@ describe('ProfessionalsController', () => {
     });
   });
 
-  describe('findAvailabilityByProfessional', () => {
-    it('should return availabilities for a professional', async () => {
+  describe('findAvailabilities', () => {
+    it('should return availabilities for all professionals', async () => {
       jest
-        .spyOn(service, 'findAvailabilityByProfessional')
-        .mockResolvedValueOnce(findAvailabilityResMock);
+        .spyOn(service, 'findAvailabilities')
+        .mockResolvedValueOnce([availabilityByProfessionalMock]);
 
       expect(
-        await controller.findAvailabilityByProfessional(
-          findAvailabilityMock.professionalId,
+        await controller.findAvailabilities(
+          null,
+          new Date('2024-06-11T10:00:00Z'),
+          new Date('2024-06-13T23:00:00Z'),
         ),
-      ).toBe(findAvailabilityResMock);
-      expect(service.findAvailabilityByProfessional).toHaveBeenCalledWith({
-        professionalId: findAvailabilityMock.professionalId,
+      ).toStrictEqual([availabilityByProfessionalMock]);
+      expect(service.findAvailabilities).toHaveBeenCalledWith({
+        professionalId: null,
+        startDate: new Date('2024-06-11T10:00:00Z'),
+        endDate: new Date('2024-06-13T23:00:00Z'),
       });
     });
   });

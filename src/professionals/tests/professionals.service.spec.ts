@@ -7,7 +7,6 @@ import {
   createAvailabilityWrongMock,
 } from './mocks/create-availability.mock';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { availabilityByProfessionalMock } from './mocks/find-availability.mock';
 
 describe('ProfessionalsService', () => {
   let service: ProfessionalsService;
@@ -20,13 +19,12 @@ describe('ProfessionalsService', () => {
         ProfessionalsService,
         {
           provide: AvailabilitiesService,
-          useValue: { findByProfessionalId: jest.fn(), insert: jest.fn() },
+          useValue: { findAvailabilities: jest.fn(), insert: jest.fn() },
         },
         {
           provide: SchedulesService,
           useValue: {
-            findByRange: jest.fn(),
-            findByProfessionalId: jest.fn(),
+            findSchedules: jest.fn(),
           },
         },
       ],
@@ -76,44 +74,60 @@ describe('ProfessionalsService', () => {
     });
   });
 
-  describe('findAvailabilityByProfessional', () => {
+  describe('findAvailabilities', () => {
     it('should return available slots for a professional', async () => {
       const professionalId = createAvailabilityMock.professionalId;
       jest
-        .spyOn(availabilitiesService, 'findByProfessionalId')
+        .spyOn(availabilitiesService, 'findAvailabilities')
         .mockResolvedValueOnce([
           {
             id: 1,
             professionalId,
             startDate: new Date('2024-06-11T10:00:00Z'),
-            endDate: new Date('2024-06-11T14:00:00Z'),
+            endDate: new Date('2024-06-11T13:00:00Z'),
           },
         ]);
-      jest
-        .spyOn(schedulesService, 'findByProfessionalId')
-        .mockResolvedValueOnce([
-          {
-            id: '1',
-            clientId: '456',
-            professionalId,
-            startDate: new Date('2024-06-11T11:00:00Z'),
-            endDate: new Date('2024-06-11T12:00:00Z'),
+      jest.spyOn(schedulesService, 'findSchedules').mockResolvedValueOnce([
+        {
+          id: '1',
+          clientId: '456',
+          professionalId,
+          startDate: new Date('2024-06-11T11:00:00Z'),
+          endDate: new Date('2024-06-11T12:00:00Z'),
+        },
+      ]);
+
+      const result = await service.findAvailabilities({
+        professionalId: null,
+        startDate: new Date('2024-06-11T08:00:00Z'),
+        endDate: new Date('2024-06-13T23:00:00Z'),
+      });
+
+      expect(result).toStrictEqual([
+        {
+          professionalId: '1D67H',
+          slots: {
+            '2024-06-11': [
+              { startTime: '10:00', endTime: '10:30' },
+              { startTime: '10:30', endTime: '11:00' },
+              { startTime: '12:00', endTime: '12:30' },
+              { startTime: '12:30', endTime: '13:00' },
+            ],
           },
-        ]);
+        },
+      ]);
 
-      const result = await service.findAvailabilityByProfessional({
-        professionalId,
+      expect(availabilitiesService.findAvailabilities).toHaveBeenCalledWith({
+        professionalId: null,
+        startDate: new Date('2024-06-11T08:00:00Z'),
+        endDate: new Date('2024-06-13T23:00:00Z'),
       });
 
-      expect(result).toEqual(availabilityByProfessionalMock);
-
-      expect(availabilitiesService.findByProfessionalId).toHaveBeenCalledWith({
-        professionalId,
+      expect(schedulesService.findSchedules).toHaveBeenCalledWith({
+        professionalId: null,
+        startDate: new Date('2024-06-11T08:00:00Z'),
+        endDate: new Date('2024-06-13T23:00:00Z'),
       });
-
-      expect(schedulesService.findByProfessionalId).toHaveBeenCalledWith(
-        professionalId,
-      );
     });
   });
 });

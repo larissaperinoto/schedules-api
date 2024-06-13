@@ -62,13 +62,13 @@ describe('SchedulesService', () => {
     });
   });
 
-  describe('findByRange', () => {
+  describe('findBetweenDateRange', () => {
     it('should find schedules within a date range', async () => {
       const findSpy = jest
         .spyOn(repository, 'find')
         .mockResolvedValue([scheduleMock] as never);
 
-      await service.findByRange(scheduleMock);
+      await service.findBetweenDateRange(scheduleMock);
 
       expect(findSpy).toHaveBeenCalledWith({
         where: [
