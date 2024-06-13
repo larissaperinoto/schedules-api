@@ -16,7 +16,7 @@ export class AppointmentsService {
     startDate,
     endDate,
   }: CreateAppointmentDto) {
-    const availabilities = await this.availabilityService.findByProfessionalId({
+    const availabilities = await this.availabilityService.findAvailabilities({
       professionalId,
       startDate,
       endDate,
@@ -69,7 +69,7 @@ export class AppointmentsService {
       );
     }
 
-    const scheduled = await this.scheduleService.findByRange({
+    const scheduled = await this.scheduleService.findBetweenDateRange({
       startDate,
       endDate,
     });

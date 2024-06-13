@@ -1,4 +1,4 @@
-export class FindByRangeDto {
+export class FindByDateRangeDto {
   startDate: Date;
   endDate: Date;
 }

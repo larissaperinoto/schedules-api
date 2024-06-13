@@ -16,11 +16,11 @@ describe('AppointmentsService', () => {
         AppointmentsService,
         {
           provide: AvailabilitiesService,
-          useValue: { findByProfessionalId: jest.fn() },
+          useValue: { findAvailabilities: jest.fn() },
         },
         {
           provide: SchedulesService,
-          useValue: { insert: jest.fn(), findByRange: jest.fn() },
+          useValue: { insert: jest.fn(), findBetweenDateRange: jest.fn() },
         },
       ],
     }).compile();
@@ -39,7 +39,7 @@ describe('AppointmentsService', () => {
   describe('createAppointment', () => {
     it('should throw an exception if no availabilities are found', async () => {
       jest
-        .spyOn(availabilitiesService, 'findByProfessionalId')
+        .spyOn(availabilitiesService, 'findAvailabilities')
         .mockResolvedValueOnce([]);
 
       await expect(
@@ -51,7 +51,7 @@ describe('AppointmentsService', () => {
 
     it('should throw an exception if the start time is before any availability', async () => {
       jest
-        .spyOn(availabilitiesService, 'findByProfessionalId')
+        .spyOn(availabilitiesService, 'findAvailabilities')
         .mockResolvedValueOnce([
           {
             id: 1,
@@ -70,7 +70,7 @@ describe('AppointmentsService', () => {
 
     it('should throw an exception if the end time is after any availability', async () => {
       jest
-        .spyOn(availabilitiesService, 'findByProfessionalId')
+        .spyOn(availabilitiesService, 'findAvailabilities')
         .mockResolvedValueOnce([
           {
             id: 1,
@@ -89,7 +89,7 @@ describe('AppointmentsService', () => {
 
     it('should throw an exception if the end time is after the availability', async () => {
       jest
-        .spyOn(availabilitiesService, 'findByProfessionalId')
+        .spyOn(availabilitiesService, 'findAvailabilities')
         .mockResolvedValueOnce([
           {
             id: 1,
@@ -108,7 +108,7 @@ describe('AppointmentsService', () => {
 
     it('should throw an exception if there is a schedule conflict', async () => {
       jest
-        .spyOn(availabilitiesService, 'findByProfessionalId')
+        .spyOn(availabilitiesService, 'findAvailabilities')
         .mockResolvedValueOnce([
           {
             id: 1,
@@ -117,15 +117,17 @@ describe('AppointmentsService', () => {
             endDate: new Date('2024-06-11T11:30:00Z'),
           },
         ]);
-      jest.spyOn(schedulesService, 'findByRange').mockResolvedValueOnce([
-        {
-          id: '123-4576',
-          clientId: '123OK',
-          professionalId: createAppointmentMock.professionalId,
-          startDate: new Date('2024-06-11T10:00:00Z'),
-          endDate: new Date('2024-06-11T11:00:00Z'),
-        },
-      ]);
+      jest
+        .spyOn(schedulesService, 'findBetweenDateRange')
+        .mockResolvedValueOnce([
+          {
+            id: '123-4576',
+            clientId: '123OK',
+            professionalId: createAppointmentMock.professionalId,
+            startDate: new Date('2024-06-11T10:00:00Z'),
+            endDate: new Date('2024-06-11T11:00:00Z'),
+          },
+        ]);
 
       await expect(
         service.createAppointment(createAppointmentMock),
@@ -136,7 +138,7 @@ describe('AppointmentsService', () => {
 
     it('should insert the appointment if all checks pass', async () => {
       jest
-        .spyOn(availabilitiesService, 'findByProfessionalId')
+        .spyOn(availabilitiesService, 'findAvailabilities')
         .mockResolvedValueOnce([
           {
             id: 1,
@@ -145,7 +147,9 @@ describe('AppointmentsService', () => {
             endDate: new Date('2024-06-11T12:00:00Z'),
           },
         ]);
-      jest.spyOn(schedulesService, 'findByRange').mockResolvedValueOnce([]);
+      jest
+        .spyOn(schedulesService, 'findBetweenDateRange')
+        .mockResolvedValueOnce([]);
       jest.spyOn(schedulesService, 'insert').mockResolvedValueOnce({} as any);
 
       const response = await service.createAppointment(createAppointmentMock);
