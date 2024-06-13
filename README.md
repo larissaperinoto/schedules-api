@@ -11,6 +11,7 @@
 
 - Node.Js (version >= 16) installed
 - Docker or local Postgres installed
+- Yarn installed
 
 ### Running the project
 
@@ -42,7 +43,7 @@ Through the terminal, log into your postgres and run the command bellow to creat
 
         CREATE DATABASE schedules;
 
-Then copy the contents of the **database.sql** file located at the root of the project and run the query to create the tables.
+Then copy the contents of the **database.sql** file located at the root of the project and run the query to create the tables
 
 #### Environment
 
@@ -52,12 +53,12 @@ Create a .env file in the root and define your project's environment variables
         DB_NAME=schedules
         DB_PORT=5432
         DB_HOST=localhost
-        DB_USERNAME=<your username or postgres>
-        DB_PASSWORD=<your password or postgres>
+        DB_USERNAME=postgres
+        DB_PASSWORD=postgres
 
 Start the application
 
-        yan start
+        yarn start
 
 If you want to start as a developer, use the command below
 
