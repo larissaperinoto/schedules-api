@@ -2,7 +2,13 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InsertAvailabilityDto } from './dto/insert-availability.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Availability } from '../database/entity/availability.entity';
-import { Repository, MoreThan, LessThan } from 'typeorm';
+import {
+  Repository,
+  MoreThan,
+  LessThan,
+  MoreThanOrEqual,
+  LessThanOrEqual,
+} from 'typeorm';
 import { FindByProfessionalIdDto } from './dto/findBy.dto';
 
 @Injectable()
@@ -52,5 +58,23 @@ export class AvailabilitiesService {
         where: { professionalId },
       });
     }
+  }
+
+  public async findAvailabilities({ startDate, endDate, professionalId }) {
+    const query = { where: {} };
+
+    if (startDate) {
+      query.where['startDate'] = MoreThanOrEqual(startDate);
+    }
+
+    if (endDate) {
+      query.where['endDate'] = LessThanOrEqual(endDate);
+    }
+
+    if (professionalId) {
+      query.where['professionalId'] = professionalId;
+    }
+
+    return await this.availabilityRepository.find(query);
   }
 }

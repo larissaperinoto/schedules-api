@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InsertScheduleDto } from './dto/insert-schedule.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Schedule } from '../database/entity/schedule.entity';
-import { Between, Repository } from 'typeorm';
+import { Between, LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { FindByRangeDto } from './dto/findBy.dto';
 
 @Injectable()
@@ -46,5 +46,23 @@ export class SchedulesService {
     return await this.scheduleRepository.find({
       where: { professionalId },
     });
+  }
+
+  public async findSchedules({ startDate, endDate, professionalId }) {
+    const query = { where: {} };
+
+    if (startDate) {
+      query.where['startDate'] = MoreThanOrEqual(startDate);
+    }
+
+    if (endDate) {
+      query.where['endDate'] = LessThanOrEqual(endDate);
+    }
+
+    if (professionalId) {
+      query.where['professionalId'] = professionalId;
+    }
+
+    return await this.scheduleRepository.find(query);
   }
 }

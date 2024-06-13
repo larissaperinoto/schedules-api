@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ProfessionalsService } from './professionals.service';
 import { CreateAvailabilityDto } from './dto/create-availability.dto';
 import {
@@ -21,12 +21,16 @@ export class ProfessionalsController {
     return this.professionalsService.createAvailability(payload);
   }
 
-  @Get('/availability/:professionalId')
-  findAvailabilityByProfessional(
-    @Param('professionalId') professionalId: string,
+  @Get('/availabilities')
+  findAvailabilities(
+    @Query('professionalId') professionalId: string,
+    @Query('startDate') startDate: Date,
+    @Query('endDate') endDate: Date,
   ) {
-    return this.professionalsService.findAvailabilityByProfessional({
+    return this.professionalsService.findAvailabilities({
       professionalId,
+      startDate,
+      endDate,
     });
   }
 }

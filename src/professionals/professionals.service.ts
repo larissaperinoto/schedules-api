@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateAvailabilityDto } from './dto/create-availability.dto';
 import { AvailabilitiesService } from 'src/availabilities/availabilities.service';
-import { FindAvailabilityProfessionalDto } from './dto/find-availability.dto';
 import { SchedulesService } from 'src/schedules/schedules.service';
 import { Availability } from 'src/database/entity/availability.entity';
 import { Schedule } from 'src/database/entity/schedule.entity';
@@ -40,25 +39,62 @@ export class ProfessionalsService {
     };
   }
 
-  public async findAvailabilityByProfessional({
-    professionalId,
-  }: FindAvailabilityProfessionalDto) {
-    const availabilities = await this.availabilityService.findByProfessionalId({
+  public async findAvailabilities({ professionalId, startDate, endDate }) {
+    const start: Date = startDate ?? new Date();
+
+    const availabilities = await this.availabilityService.findAvailabilities({
       professionalId,
+      startDate: start,
+      endDate,
     });
 
-    const schedules =
-      await this.schedulesService.findByProfessionalId(professionalId);
-
-    const availableSlots = this.calculateAvailableSlots(
-      availabilities,
-      schedules,
-    );
-
-    return {
+    const schedules = await this.schedulesService.findSchedules({
       professionalId,
-      availability: availableSlots,
-    };
+      startDate: start,
+      endDate,
+    });
+
+    const result = [];
+
+    const professionals = this.groupByProfessional(availabilities, schedules);
+
+    for (const professional of Object.entries(professionals)) {
+      result.push({
+        professionalId: professional[0],
+        slots: this.calculateAvailableSlots(
+          professional[1]['availabilities'],
+          professional[1]['schedules'],
+        ),
+      });
+    }
+
+    return result;
+  }
+
+  private groupByProfessional(
+    availabilities: Availability[],
+    schedules: Schedule[],
+  ) {
+    return availabilities.reduce((acc, curr) => {
+      const professionalId = curr.professionalId;
+      if (!acc[professionalId]) {
+        acc[professionalId] = {
+          availabilities: [
+            { startDate: curr.startDate, endDate: curr.endDate },
+          ],
+          schedules: schedules.filter(
+            ({ professionalId }) => professionalId === curr.professionalId,
+          ),
+        };
+      } else {
+        acc[professionalId].availabilities.push({
+          startDate: curr.startDate,
+          endDate: curr.endDate,
+        });
+      }
+
+      return acc;
+    }, {});
   }
 
   private calculateAvailableSlots(
@@ -74,10 +110,10 @@ export class ProfessionalsService {
       for (
         let current = start;
         current < end;
-        current.setHours(current.getHours() + 1)
+        current.setMinutes(current.getMinutes() + 30)
       ) {
         const nextHour = new Date(current);
-        nextHour.setHours(nextHour.getHours() + 1);
+        nextHour.setMinutes(nextHour.getMinutes() + 30);
 
         const isBooked = schedules.some(
           (schedule) =>
