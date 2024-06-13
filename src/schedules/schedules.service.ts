@@ -45,12 +45,6 @@ export class SchedulesService {
     });
   }
 
-  public async findByProfessionalId(professionalId: string) {
-    return await this.scheduleRepository.find({
-      where: { professionalId },
-    });
-  }
-
   public async findSchedules({ startDate, endDate, professionalId }) {
     const query = { where: {} };
 

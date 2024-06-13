@@ -82,18 +82,4 @@ describe('SchedulesService', () => {
       });
     });
   });
-
-  describe('findByProfessionalId', () => {
-    it('should find schedules by professionalId', async () => {
-      const findSpy = jest
-        .spyOn(repository, 'find')
-        .mockResolvedValue([scheduleMock] as never);
-
-      await service.findByProfessionalId(scheduleMock.professionalId);
-
-      expect(findSpy).toHaveBeenCalledWith({
-        where: { professionalId: scheduleMock.professionalId },
-      });
-    });
-  });
 });
