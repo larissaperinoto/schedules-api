@@ -1,11 +1,14 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { ProfessionalsService } from './professionals.service';
-import { CreateAvailabilityDto } from './dto/create-availability.dto';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
+  ApiOkResponse,
   ApiOperation,
+  ApiQuery,
 } from '@nestjs/swagger';
+import { AvailabilitiesResponse } from 'src/utils/swagger/responses';
+import { ProfessionalsService } from './professionals.service';
+import { CreateAvailabilityDto } from './dto/create-availability.dto';
 
 @Controller('professionals')
 export class ProfessionalsController {
@@ -22,6 +25,25 @@ export class ProfessionalsController {
   }
 
   @Get('/availabilities')
+  @ApiOperation({ summary: 'Find availabilities for professionals' })
+  @ApiQuery({
+    name: 'professionalId',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'startDate',
+    required: false,
+    type: Date,
+  })
+  @ApiQuery({
+    name: 'endDate',
+    required: false,
+    type: Date,
+  })
+  @ApiOkResponse({
+    type: [AvailabilitiesResponse],
+  })
   findAvailabilities(
     @Query('professionalId') professionalId: string,
     @Query('startDate') startDate: Date,
