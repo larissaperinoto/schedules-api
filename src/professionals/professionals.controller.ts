@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import {
@@ -88,5 +89,12 @@ export class ProfessionalsController {
       professionalId,
       date,
     });
+  }
+
+  @Put('/availability/update')
+  @ApiOperation({ summary: 'Update availabilities for professionals' })
+  @ApiOkResponse({ description: 'Availability updated successfully' })
+  updateAvailability(@Body() payload: CreateAvailabilityDto) {
+    return this.professionalsService.updateAvailability(payload);
   }
 }

@@ -166,4 +166,24 @@ export class ProfessionalsService {
       endDate,
     });
   }
+
+  public async updateAvailability({
+    professionalId,
+    availabilities,
+  }: CreateAvailabilityDto) {
+    for (const { startDate } of availabilities) {
+      const date = new Date(startDate).toISOString().split('T')[0];
+
+      await this.removeAvailability({
+        professionalId,
+        date,
+      });
+    }
+
+    await this.createAvailability({ professionalId, availabilities });
+
+    return {
+      message: 'Availability updated successfully',
+    };
+  }
 }
