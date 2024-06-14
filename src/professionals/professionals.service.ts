@@ -85,7 +85,7 @@ export class ProfessionalsService {
     schedules: Schedule[],
   ) {
     return availabilities.reduce((acc, curr) => {
-      const professionalId = curr.professionalId;
+      const professionalId = curr.professionalId.trim();
       if (!acc[professionalId]) {
         acc[professionalId] = {
           availabilities: [
