@@ -16,7 +16,7 @@ describe('AppointmentsService', () => {
         AppointmentsService,
         {
           provide: AvailabilitiesService,
-          useValue: { findAvailabilities: jest.fn() },
+          useValue: { findByProfessionalId: jest.fn() },
         },
         {
           provide: SchedulesService,
@@ -39,7 +39,7 @@ describe('AppointmentsService', () => {
   describe('createAppointment', () => {
     it('should throw an exception if no availabilities are found', async () => {
       jest
-        .spyOn(availabilitiesService, 'findAvailabilities')
+        .spyOn(availabilitiesService, 'findByProfessionalId')
         .mockResolvedValueOnce([]);
 
       await expect(
@@ -51,7 +51,7 @@ describe('AppointmentsService', () => {
 
     it('should throw an exception if the start time is before any availability', async () => {
       jest
-        .spyOn(availabilitiesService, 'findAvailabilities')
+        .spyOn(availabilitiesService, 'findByProfessionalId')
         .mockResolvedValueOnce([
           {
             id: 1,
@@ -70,7 +70,7 @@ describe('AppointmentsService', () => {
 
     it('should throw an exception if the end time is after any availability', async () => {
       jest
-        .spyOn(availabilitiesService, 'findAvailabilities')
+        .spyOn(availabilitiesService, 'findByProfessionalId')
         .mockResolvedValueOnce([
           {
             id: 1,
@@ -89,7 +89,7 @@ describe('AppointmentsService', () => {
 
     it('should throw an exception if the end time is after the availability', async () => {
       jest
-        .spyOn(availabilitiesService, 'findAvailabilities')
+        .spyOn(availabilitiesService, 'findByProfessionalId')
         .mockResolvedValueOnce([
           {
             id: 1,
@@ -108,7 +108,7 @@ describe('AppointmentsService', () => {
 
     it('should throw an exception if there is a schedule conflict', async () => {
       jest
-        .spyOn(availabilitiesService, 'findAvailabilities')
+        .spyOn(availabilitiesService, 'findByProfessionalId')
         .mockResolvedValueOnce([
           {
             id: 1,
@@ -138,7 +138,7 @@ describe('AppointmentsService', () => {
 
     it('should insert the appointment if all checks pass', async () => {
       jest
-        .spyOn(availabilitiesService, 'findAvailabilities')
+        .spyOn(availabilitiesService, 'findByProfessionalId')
         .mockResolvedValueOnce([
           {
             id: 1,

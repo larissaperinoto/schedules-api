@@ -60,7 +60,11 @@ export class AvailabilitiesService {
     }
   }
 
-  public async findAvailabilities({ startDate, endDate, professionalId }) {
+  public async findAvailabilities({
+    startDate,
+    endDate,
+    professionalId,
+  }: Partial<FindByProfessionalIdDto>) {
     const query = { where: {} };
 
     if (startDate) {
@@ -74,7 +78,7 @@ export class AvailabilitiesService {
     if (professionalId) {
       query.where['professionalId'] = professionalId;
     }
-
+    console.log(query);
     return await this.availabilityRepository.find(query);
   }
 }

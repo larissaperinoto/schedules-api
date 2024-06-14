@@ -16,11 +16,13 @@ export class AppointmentsService {
     startDate,
     endDate,
   }: CreateAppointmentDto) {
-    const availabilities = await this.availabilityService.findAvailabilities({
+    const availabilities = await this.availabilityService.findByProfessionalId({
       professionalId,
       startDate,
       endDate,
     });
+
+    console.log(availabilities);
 
     if (!availabilities.length) {
       throw new HttpException(
