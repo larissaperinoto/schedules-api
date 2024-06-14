@@ -113,4 +113,29 @@ describe('AvailabilitiesService', () => {
       expect(deleteMock).toHaveBeenCalled();
     });
   });
+
+  describe('findAvailabilities', () => {
+    it('should return availabilities for valid inputs', async () => {
+      const mockDto = {
+        startDate: new Date('2024-06-15T00:00:00.000Z'),
+        endDate: new Date('2024-06-15T23:59:59.999Z'),
+        professionalId: '123',
+      };
+
+      const mockResult = [
+        {
+          id: 1,
+          startDate: mockDto.startDate,
+          endDate: mockDto.endDate,
+          professionalId: mockDto.professionalId,
+        },
+      ];
+
+      jest.spyOn(repository, 'find').mockResolvedValueOnce(mockResult as never);
+
+      const result = await service.findAvailabilities(mockDto);
+      expect(result).toEqual(mockResult);
+      expect(repository.find).toHaveBeenCalledTimes(1);
+    });
+  });
 });
