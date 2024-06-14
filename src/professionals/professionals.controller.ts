@@ -1,9 +1,20 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiQuery,
 } from '@nestjs/swagger';
 import { AvailabilitiesResponse } from 'src/utils/swagger/responses';
@@ -53,6 +64,29 @@ export class ProfessionalsController {
       professionalId,
       startDate,
       endDate,
+    });
+  }
+
+  @Delete('availability/remove/:professionalId/:date')
+  @ApiOperation({ summary: 'Remove availabilities for professionals' })
+  @ApiParam({
+    name: 'professionalId',
+    type: 'string',
+    example: '1D67H',
+  })
+  @ApiParam({
+    name: 'date',
+    type: 'string',
+    example: '2024-01-01',
+  })
+  @HttpCode(HttpStatus.NO_CONTENT)
+  removeAvailability(
+    @Param('professionalId') professionalId: string,
+    @Param('date') date: string,
+  ) {
+    return this.professionalsService.removeAvailability({
+      professionalId,
+      date,
     });
   }
 }

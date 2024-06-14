@@ -92,4 +92,25 @@ describe('AvailabilitiesService', () => {
       });
     });
   });
+
+  describe('removeAvailability', () => {
+    it('should remove availability for a professional within a date range', async () => {
+      const professionalId = '1D67H';
+      const startDate = new Date('2024-01-01T00:00:00.000Z');
+      const endDate = new Date('2024-01-01T23:59:59.999Z');
+
+      const deleteMock = jest.fn().mockResolvedValue({ affected: 1 });
+      jest.spyOn(repository, 'createQueryBuilder').mockReturnValue({
+        delete: jest.fn().mockReturnThis(),
+        from: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
+        execute: deleteMock,
+      } as any);
+
+      await service.removeAvailability({ professionalId, startDate, endDate });
+
+      expect(deleteMock).toHaveBeenCalled();
+    });
+  });
 });

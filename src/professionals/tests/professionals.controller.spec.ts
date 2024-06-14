@@ -17,6 +17,7 @@ describe('ProfessionalsController', () => {
           useValue: {
             createAvailability: jest.fn(),
             findAvailabilities: jest.fn(),
+            removeAvailability: jest.fn(),
           },
         },
       ],
@@ -65,6 +66,23 @@ describe('ProfessionalsController', () => {
         professionalId: null,
         startDate: new Date('2024-06-11T10:00:00Z'),
         endDate: new Date('2024-06-13T23:00:00Z'),
+      });
+    });
+  });
+
+  describe('removeAvailability', () => {
+    it('should call removeAvailability with correct parameters', async () => {
+      const professionalId = '123';
+      const date = '2024-08-13';
+      const removeAvailabilitySpy = jest
+        .spyOn(service, 'removeAvailability')
+        .mockResolvedValue();
+
+      const result = await controller.removeAvailability(professionalId, date);
+
+      expect(removeAvailabilitySpy).toHaveBeenCalledWith({
+        professionalId,
+        date,
       });
     });
   });

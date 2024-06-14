@@ -62,4 +62,21 @@ export class SchedulesService {
 
     return await this.scheduleRepository.find(query);
   }
+
+  public async removeSchedule({
+    professionalId,
+    startDate,
+    endDate,
+  }: Partial<InsertScheduleDto>) {
+    await this.scheduleRepository
+      .createQueryBuilder()
+      .delete()
+      .from(Schedule)
+      .where('professionalId = :professionalId', { professionalId })
+      .andWhere('startDate >= :startDate AND endDate <= :endDate', {
+        startDate,
+        endDate,
+      })
+      .execute();
+  }
 }

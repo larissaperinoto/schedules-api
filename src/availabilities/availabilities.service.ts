@@ -78,7 +78,24 @@ export class AvailabilitiesService {
     if (professionalId) {
       query.where['professionalId'] = professionalId;
     }
-    console.log(query);
+
     return await this.availabilityRepository.find(query);
+  }
+
+  public async removeAvailability({
+    professionalId,
+    startDate,
+    endDate,
+  }: Partial<InsertAvailabilityDto>) {
+    await this.availabilityRepository
+      .createQueryBuilder()
+      .delete()
+      .from(Availability)
+      .where('professionalId = :professionalId', { professionalId })
+      .andWhere('startDate >= :startDate AND endDate <= :endDate', {
+        startDate,
+        endDate,
+      })
+      .execute();
   }
 }

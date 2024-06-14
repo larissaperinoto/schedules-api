@@ -22,8 +22,6 @@ export class AppointmentsService {
       endDate,
     });
 
-    console.log(availabilities);
-
     if (!availabilities.length) {
       throw new HttpException(
         'Time range is not available',
