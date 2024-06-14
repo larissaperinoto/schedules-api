@@ -17,12 +17,21 @@ export class ProfessionalsService {
     availabilities,
   }: CreateAvailabilityDto) {
     for (const { startDate, endDate } of availabilities) {
-      const start = new Date(startDate).getTime();
-      const end = new Date(endDate).getTime();
+      const start = new Date(startDate);
+      const end = new Date(endDate);
 
-      if (start > end) {
+      if (start.getTime() > end.getTime()) {
         throw new HttpException(
           'The end date cannot be greater than the start date',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const diff = end.getDate() - start.getDate();
+
+      if (diff != 0) {
+        throw new HttpException(
+          'The availability range must be for the same day',
           HttpStatus.BAD_REQUEST,
         );
       }

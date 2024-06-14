@@ -52,6 +52,21 @@ describe('ProfessionalsService', () => {
         ),
       );
     });
+    it('should throw and error when availability range is not for the same day', async () => {
+      const mockDto = {
+        professionalId: '123',
+        availabilities: [
+          {
+            startDate: new Date('2024-06-15T10:00:00.000Z'),
+            endDate: new Date('2024-06-16T10:00:00.000Z'),
+          },
+        ],
+      };
+
+      await expect(service.createAvailability(mockDto)).rejects.toThrow(
+        'The availability range must be for the same day',
+      );
+    });
 
     it('should create availabilities if all checks pass', async () => {
       jest

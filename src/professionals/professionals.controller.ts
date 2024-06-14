@@ -30,7 +30,8 @@ export class ProfessionalsController {
   @ApiOperation({ summary: 'Creates availability for a professional' })
   @ApiCreatedResponse({ description: 'Availability entered successfully' })
   @ApiBadRequestResponse({
-    description: 'The end date cannot be greater than the start date',
+    description:
+      'The end date cannot be greater than the start date and the availability range must be for the same day',
   })
   createAvailability(@Body() payload: CreateAvailabilityDto) {
     return this.professionalsService.createAvailability(payload);
@@ -94,6 +95,11 @@ export class ProfessionalsController {
   @Put('/availability/update')
   @ApiOperation({ summary: 'Update availabilities for professionals' })
   @ApiOkResponse({ description: 'Availability updated successfully' })
+  @ApiCreatedResponse({ description: 'Availability entered successfully' })
+  @ApiBadRequestResponse({
+    description:
+      'The end date cannot be greater than the start date and the availability range must be for the same day',
+  })
   updateAvailability(@Body() payload: CreateAvailabilityDto) {
     return this.professionalsService.updateAvailability(payload);
   }
