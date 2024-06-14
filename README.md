@@ -27,7 +27,7 @@ Install dependencies
 
 Create a postgres container with the command below replacing the username (POSTGRES_USER) and password (POSTGRES_PASSWORD) information if necessary
 
-        docker run --name my-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=schedules -p 5432:5432 -d postgres
+        docker run --name my-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
 
 Check if the container was created. You should see **postgres-container** in the list
 
@@ -50,7 +50,7 @@ Then copy the contents of the **database.sql** file located at the root of the p
 Create a .env file in the root and define your project's environment variables
 
         PORT=3001
-        DB_NAME=schedules
+        DB_NAME=postgres
         DB_PORT=5432
         DB_HOST=localhost
         DB_USERNAME=postgres
@@ -85,3 +85,5 @@ Run tests with coverage
 After starting the service, check the endpoint documentation using the address below in the browser
 
         http://localhost:3001/api
+
+You can test the endpoints through the documentation page using the **Try it out** button or through your preferred client
