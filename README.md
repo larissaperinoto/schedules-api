@@ -9,9 +9,9 @@
 
 ### Pre requirements to run the project
 
-- Node.Js (version >= 16) installed
-- Docker or local Postgres installed
-- Yarn installed
+- Node.Js (version >= 16)
+- Docker or local Postgres
+- Yarn
 
 ### Running the project
 
@@ -25,11 +25,11 @@ Install dependencies
 
 #### Running with Docker
 
-Create a postgres container with the command below replacing the username (POSTGRES_USER) and password (POSTGRES_PASSWORD) information if necessary
+Create a postgres container with the command below
 
         docker run --name my-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
 
-Check if the container was created. You should see **postgres-container** in the list
+Check if the container was created. You should see **my-postgres** on the list
 
         docker ps
 
@@ -39,9 +39,9 @@ Create tables with the command bellow
 
 #### Running with local Postgres
 
-Through the terminal, log into your postgres and run the command bellow to create schedules database
+Through the terminal, log into your postgres and run the command bellow to create postgres database
 
-        CREATE DATABASE schedules;
+        CREATE DATABASE postgres;
 
 Then copy the contents of the **database.sql** file located at the root of the project and run the query to create the tables
 
